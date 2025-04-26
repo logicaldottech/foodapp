@@ -1,0 +1,60 @@
+name: foodapp
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.7
+  image_picker: ^1.0.4
+  pin_code_fields: ^8.0.1
+  sms_autofill: ^2.3.0
+  geolocator: ^10.1.0
+  geocoding: ^2.1.0
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.0
+  shared_preferences: ^2.2.2
+  google_maps_flutter: ^2.5.0
+  
+  
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0 # ✅ Google Fonts added
+  intl: ^0.20.2
+  flip_card: ^0.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/delivery.png
+    - assets/images/services.png
+    - assets/images/parents.png
+    - assets/images/food.png
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/banner.png
+    - assets/icons/
+    - assets/services/
+    
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
