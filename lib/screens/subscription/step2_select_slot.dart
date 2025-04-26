@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'step3_start_date.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Step2SelectSlot extends StatefulWidget {
   final String duration;
+  final Function(String) onSlotSelected;
 
-  const Step2SelectSlot({Key? key, required this.duration}) : super(key: key);
+  const Step2SelectSlot({
+    Key? key,
+    required this.duration,
+    required this.onSlotSelected,
+  }) : super(key: key);
 
   @override
   State<Step2SelectSlot> createState() => _Step2SelectSlotState();
@@ -13,61 +18,75 @@ class Step2SelectSlot extends StatefulWidget {
 class _Step2SelectSlotState extends State<Step2SelectSlot> {
   String? selectedSlot;
 
-  final List<String> timeSlots = [
+  final List<String> slots = [
     '12:00 PM – 1:00 PM',
     '1:00 PM – 2:00 PM',
     '2:00 PM – 3:00 PM',
   ];
 
-  void _goToNextStep() {
-    if (selectedSlot != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Step3StartDate(
-            duration: widget.duration,
-            deliveryTime: selectedSlot!,
-          ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a delivery time')),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Choose Your Delivery Time"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ...timeSlots.map((slot) => RadioListTile<String>(
-                  title: Text(slot),
-                  value: slot,
-                  groupValue: selectedSlot,
-                  onChanged: (value) {
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: ListView.separated(
+              itemCount: slots.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final slot = slots[index];
+                final isSelected = slot == selectedSlot;
+
+                return GestureDetector(
+                  onTap: () {
                     setState(() {
-                      selectedSlot = value;
+                      selectedSlot = slot;
                     });
+                    widget.onSlotSelected(slot); // <--- Important callback here
                   },
-                )),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _goToNextStep,
-                child: const Text("Next"),
-              ),
-            )
-          ],
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.greenAccent.shade100 : Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isSelected ? Colors.green : Colors.grey.shade300,
+                        width: 2,
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: Colors.green.withOpacity(0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.access_time_rounded, color: Colors.green),
+                        const SizedBox(width: 12),
+                        Text(
+                          slot,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

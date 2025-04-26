@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foodapp/screens/subscription/step1tostep3.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'step1_choose_duration.dart';
+
 
 class SubscriptionPlanDetailPage extends StatefulWidget {
   final String title;
@@ -53,7 +54,7 @@ class _SubscriptionPlanDetailPageState extends State<SubscriptionPlanDetailPage>
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const Step1ChooseDuration()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const Step1toStep3()));
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
