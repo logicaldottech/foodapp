@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-void showVerifyOtpPopup(BuildContext context, Function(String, String) onVerified) {
+void showVerifyOtpPopup(
+  BuildContext context,
+  Function(String, String) onVerified, {
+  bool verifyPhone = true,
+  bool verifyEmail = true,
+}) {
   String phoneOtp = '';
   String emailOtp = '';
   int resendCooldown = 30;
@@ -22,31 +27,32 @@ void showVerifyOtpPopup(BuildContext context, Function(String, String) onVerifie
 
   showModalBottomSheet(
     context: context,
-    isDismissible: false,     // ⛔ can't close by tapping outside
-    enableDrag: false,        // ⛔ can't swipe down to close
     isScrollControlled: true,
+    isDismissible: false,
+    enableDrag: false,
     backgroundColor: Colors.transparent,
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setModalState) {
           final mq = MediaQuery.of(ctx);
-          return Padding(
+          return AnimatedPadding(
+            duration: const Duration(milliseconds: 200),
             padding: mq.viewInsets,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+              padding: const EdgeInsets.fromLTRB(24, 30, 24, 30),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                color: Colors.white.withOpacity(0.95),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 15,
-                    offset: const Offset(0, -3),
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 22,
+                    offset: const Offset(0, -4),
                   ),
                 ],
               ),
               child: Wrap(
-                runSpacing: 18,
+                runSpacing: 20,
                 children: [
                   Center(
                     child: Container(
@@ -54,114 +60,121 @@ void showVerifyOtpPopup(BuildContext context, Function(String, String) onVerifie
                       width: 40,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(50),
                       ),
                     ),
                   ),
                   const SizedBox(height: 6),
                   Center(
                     child: Text(
-                      "Verify OTP",
-                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+                      "🔐 Verify Your OTP",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff1F2937),
+                      ),
                     ),
                   ),
-                  Text("📱 Enter 6-digit code sent to your phone",
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[700])),
-                  PinCodeTextField(
-                    appContext: context,
-                    length: 6,
-                    onChanged: (val) => phoneOtp = val,
-                    keyboardType: TextInputType.number,
-                    textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
-                    animationType: AnimationType.fade,
-                    enableActiveFill: true,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(14),
-                      fieldHeight: 54,
-                      fieldWidth: 48,
-                      activeColor: const Color(0xff6FCF97),
-                      selectedColor: const Color(0xff6FCF97),
-                      inactiveColor: Colors.grey.shade300,
-                      activeFillColor: Colors.white,
-                      selectedFillColor: Colors.white,
-                      inactiveFillColor: Colors.grey.shade100,
-                      borderWidth: 1.3,
+
+                  // 📱 Phone OTP
+                  if (verifyPhone) ...[
+                    Text("Phone OTP",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.grey[800])),
+                    PinCodeTextField(
+                      appContext: context,
+                      length: 6,
+                      onChanged: (val) => phoneOtp = val,
+                      keyboardType: TextInputType.number,
+                      textStyle: GoogleFonts.poppins(
+                          fontSize: 18, fontWeight: FontWeight.w600),
+                      animationType: AnimationType.scale,
+                      enableActiveFill: true,
+                      pinTheme: _pinTheme(),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text("📧 Enter 6-digit code sent to your email",
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[700])),
-                  PinCodeTextField(
-                    appContext: context,
-                    length: 6,
-                    onChanged: (val) => emailOtp = val,
-                    keyboardType: TextInputType.number,
-                    textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
-                    animationType: AnimationType.fade,
-                    enableActiveFill: true,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(14),
-                      fieldHeight: 54,
-                      fieldWidth: 48,
-                      activeColor: const Color(0xff6FCF97),
-                      selectedColor: const Color(0xff6FCF97),
-                      inactiveColor: Colors.grey.shade300,
-                      activeFillColor: Colors.white,
-                      selectedFillColor: Colors.white,
-                      inactiveFillColor: Colors.grey.shade100,
-                      borderWidth: 1.3,
+                  ],
+
+                  // 📧 Email OTP
+                  if (verifyEmail) ...[
+                    Text("Email OTP",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.grey[800])),
+                    PinCodeTextField(
+                      appContext: context,
+                      length: 6,
+                      onChanged: (val) => emailOtp = val,
+                      keyboardType: TextInputType.number,
+                      textStyle: GoogleFonts.poppins(
+                          fontSize: 18, fontWeight: FontWeight.w600),
+                      animationType: AnimationType.scale,
+                      enableActiveFill: true,
+                      pinTheme: _pinTheme(),
                     ),
-                  ),
-                  const SizedBox(height: 4),
+                  ],
+
+                  // 🔁 Resend Logic
                   Align(
                     alignment: Alignment.centerRight,
                     child: resendCooldown > 0
-                        ? Text(
-                            "Resend in ${resendCooldown}s",
-                            style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
-                          )
+                        ? Text("Resend in ${resendCooldown}s",
+                            style: GoogleFonts.poppins(
+                                fontSize: 13, color: Colors.grey.shade600))
                         : GestureDetector(
                             onTap: () {
                               startResendTimer(() => setModalState(() {}));
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                content: Text("OTP Resent!"),
-                                backgroundColor: Color(0xff6FCF97),
-                              ));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("OTP Resent!"),
+                                  backgroundColor: Color(0xff7C3AED),
+                                ),
+                              );
                             },
-                            child: Text(
-                              "Resend OTP",
-                              style: GoogleFonts.poppins(
-                                color: const Color(0xff6FCF97),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            child: Text("Resend OTP",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff7C3AED),
+                                )),
                           ),
                   ),
-                  const SizedBox(height: 12),
+
+                  // ✅ Verify Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        if (phoneOtp.length == 6 && emailOtp.length == 6) {
+                        bool validPhone = !verifyPhone || phoneOtp.length == 6;
+                        bool validEmail = !verifyEmail || emailOtp.length == 6;
+
+                        if (validPhone && validEmail) {
                           Navigator.pop(context);
                           onVerified(phoneOtp, emailOtp);
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text("Both OTPs must be 6 digits"),
-                            backgroundColor: Colors.redAccent,
-                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Enter all required OTPs correctly."),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff6FCF97),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        backgroundColor: const Color(0xff7C3AED),
+                        minimumSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: Text("Verify", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                      child: Text("Verify",
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.white)),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -169,5 +182,21 @@ void showVerifyOtpPopup(BuildContext context, Function(String, String) onVerifie
         },
       );
     },
+  );
+}
+
+PinTheme _pinTheme() {
+  return PinTheme(
+    shape: PinCodeFieldShape.underline,
+    borderRadius: BorderRadius.circular(18),
+    fieldHeight: 56,
+    fieldWidth: 48,
+    inactiveColor: Colors.grey.shade300,
+    selectedColor: const Color(0xff7C3AED),
+    activeColor: const Color(0xff7C3AED),
+    activeFillColor: Colors.white,
+    selectedFillColor: Colors.white,
+    inactiveFillColor: Colors.grey.shade100,
+    borderWidth: 0.8,
   );
 }

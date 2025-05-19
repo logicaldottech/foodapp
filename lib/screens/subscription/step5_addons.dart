@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:foodapp/screens/subscription/step6_final_summary.dart'; // ✅ Import Step6
+import 'package:foodapp/screens/subscription/step6_final_summary.dart';
 
 class Step5AddOns extends StatefulWidget {
   final String duration;
@@ -28,46 +28,43 @@ class _Step5AddOnsState extends State<Step5AddOns> {
   final List<Map<String, dynamic>> addons = [
     {
       'name': 'Salad',
-      'originalPrice': 15,
-      'discountedPrice': 10,
-      'icon': Icons.eco_rounded,
+      'price': 10,
+      'image': 'assets/images/1.png', // ✅ Use your actual image paths
     },
     {
       'name': 'Curd',
-      'originalPrice': 20,
-      'discountedPrice': 15,
-      'icon': Icons.local_drink_rounded,
+      'price': 15,
+      'image': 'assets/images/1.png',
     },
     {
       'name': 'Sweet',
-      'originalPrice': 25,
-      'discountedPrice': 20,
-      'icon': Icons.cake_rounded,
+      'price': 20,
+      'image': 'assets/images/1.png',
     },
   ];
 
-  final Map<String, int> selectedAddons = {}; // addonName : quantity
+  final Map<String, int> selectedAddons = {};
 
-  void _toggleAddon(String addonName) {
+  void _toggleAddonQuantity(String addonName, bool increase) {
     setState(() {
-      if (selectedAddons.containsKey(addonName)) {
-        selectedAddons.remove(addonName);
+      if (increase) {
+        selectedAddons.update(addonName, (value) => value + 1, ifAbsent: () => 1);
       } else {
-        selectedAddons[addonName] = 1;
+        if (selectedAddons.containsKey(addonName) && selectedAddons[addonName]! > 1) {
+          selectedAddons.update(addonName, (value) => value - 1);
+        }
       }
     });
   }
 
-  void _updateQuantity(String addonName, bool increment) {
-    setState(() {
-      if (selectedAddons.containsKey(addonName)) {
-        if (increment) {
-          selectedAddons[addonName] = selectedAddons[addonName]! + 1;
-        } else if (selectedAddons[addonName]! > 1) {
-          selectedAddons[addonName] = selectedAddons[addonName]! - 1;
-        }
-      }
-    });
+  int _calculateTotalAddOnPrice() {
+    int total = 0;
+    for (var entry in selectedAddons.entries) {
+      final addon = addons.firstWhere((a) => a['name'] == entry.key);
+      final int price = addon['price'] as int;
+      total += price * entry.value;
+    }
+    return total;
   }
 
   void _onNextPressed() {
@@ -96,7 +93,7 @@ class _Step5AddOnsState extends State<Step5AddOns> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Would You Like to Add These?",
+          "Would You Like to Add Extras?",
           style: GoogleFonts.poppins(
             color: Colors.black87,
             fontSize: 22,
@@ -111,7 +108,7 @@ class _Step5AddOnsState extends State<Step5AddOns> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
               child: Text(
-                "You can enhance your plan by adding extra items (Optional).",
+                "Boost your meals with optional sides.",
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.black54,
@@ -127,102 +124,75 @@ class _Step5AddOnsState extends State<Step5AddOns> {
                 separatorBuilder: (context, index) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final addon = addons[index];
-                  final isSelected = selectedAddons.containsKey(addon['name']);
-                  final quantity = selectedAddons[addon['name']] ?? 1;
+                  final quantity = selectedAddons[addon['name']] ?? 0;
 
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isSelected ? Colors.green : Colors.grey.shade300,
-                        width: 2,
-                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black12.withOpacity(0.05),
+                          color: Colors.black12.withOpacity(0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: Column(
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              addon['icon'],
-                              size: 30,
-                              color: Colors.teal,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.teal.shade100,
+                          backgroundImage: AssetImage(addon['image']), // ✅ Real image
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 addon['name'],
                                 style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                            Checkbox(
-                              value: isSelected,
-                              onChanged: (value) => _toggleAddon(addon['name']),
-                              activeColor: Colors.teal,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              "₹${addon['originalPrice']}/day",
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: Colors.grey,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "₹${addon['discountedPrice']}/day",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green.shade700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        if (isSelected)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildQuantityButton(addon['name'], false),
-                              const SizedBox(width: 16),
+                              const SizedBox(height: 4),
                               Text(
-                                "$quantity",
+                                "₹${addon['price']}/day",
                                 style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: Colors.black54,
                                 ),
                               ),
-                              const SizedBox(width: 16),
-                              _buildQuantityButton(addon['name'], true),
                             ],
                           ),
+                        ),
+                        Row(
+                          children: [
+                            _quantityButton(addon['name'], false),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                quantity.toString(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            _quantityButton(addon['name'], true),
+                          ],
+                        ),
                       ],
                     ),
                   );
                 },
               ),
             ),
+            if (selectedAddons.isNotEmpty) _buildSelectedSummary(),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -270,9 +240,9 @@ class _Step5AddOnsState extends State<Step5AddOns> {
     );
   }
 
-  Widget _buildQuantityButton(String addonName, bool increment) {
+  Widget _quantityButton(String addonName, bool increment) {
     return InkWell(
-      onTap: () => _updateQuantity(addonName, increment),
+      onTap: () => _toggleAddonQuantity(addonName, increment),
       borderRadius: BorderRadius.circular(20),
       child: Container(
         width: 32,
@@ -291,6 +261,43 @@ class _Step5AddOnsState extends State<Step5AddOns> {
           color: Colors.white,
           size: 18,
         ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedSummary() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: selectedAddons.entries.map((entry) {
+              return Chip(
+                label: Text("${entry.key} ×${entry.value}"),
+                backgroundColor: Colors.teal.shade100,
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.teal.shade50,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              "Total Add-Ons Price: ₹${_calculateTotalAddOnPrice()}",
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

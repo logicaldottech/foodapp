@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -43,13 +44,14 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: AnimatedContainer(
         duration: const Duration(seconds: 2),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: showAlt
-                ? [Colors.green.shade200, Colors.green.shade50]
-                : [Colors.lightGreenAccent, Colors.green.shade100],
+                ? [const Color(0xff7F00FF), const Color(0xff00FF87)]
+                : [const Color(0xff7F00FF).withOpacity(0.7), const Color(0xff00FF87).withOpacity(0.7)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -59,13 +61,43 @@ class _SplashScreenState extends State<SplashScreen>
             opacity: _fade,
             child: ScaleTransition(
               scale: _scale,
-              child: const Text(
-                "FoodApp",
-                style: TextStyle(
-                  fontSize: 44,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.07),
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        )
+                      ],
+                    ),
+                    child: Text(
+                      "FoodApp",
+                      style: GoogleFonts.poppins(
+                        fontSize: 44,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Freshness Delivered.",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -74,3 +106,4 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
+ 

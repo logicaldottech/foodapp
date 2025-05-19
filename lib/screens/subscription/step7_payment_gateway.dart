@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'step10_success.dart';
+import 'step8_success.dart';
 
 class Step9PaymentGateway extends StatelessWidget {
   final String duration;

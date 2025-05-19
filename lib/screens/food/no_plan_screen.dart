@@ -1,99 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'explore_food_screen.dart'; // ✅ adjust if in different folder
+import 'explore_food_screen.dart';
 
 class NoActivePlanScreen extends StatelessWidget {
   const NoActivePlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const primary = Color(0xff6FCF97);
+    const primaryPurple = Color(0xff7C3AED);
+    const background = Color(0xffF3F4F6);
 
     return Scaffold(
-      backgroundColor: const Color(0xffF4F9F5),
-      appBar: AppBar(
-        title: Text(
-          "Food Dashboard",
-          style: GoogleFonts.poppins(
-              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
-        ),
-        backgroundColor: primary,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // 🍽️ Friendly Emoji or animation
-              const Text("🍽️", style: TextStyle(fontSize: 72)),
-
-              const SizedBox(height: 20),
-
-              Text(
-                "No Active Plan Found",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xff1A1A1A)),
+      backgroundColor: background,
+      body: Stack(
+        children: [
+          // 🌈 Gradient background at top
+          Container(
+            height: 300,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xff7F00FF), Color(0xff00FF87)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-
-              const SizedBox(height: 12),
-
-              Text(
-                "Looks like you haven't subscribed to a meal plan yet.\nLet’s explore your delicious options!",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: Colors.black54,
-                  height: 1.5,
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ExploreFoodScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xff6FCF97), Color(0xff56CCF2)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.greenAccent.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    "Explore Our Food",
-                    style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+
+                  // 🧾 AppBar text style header
+                  Text(
+                    "Food Dashboard",
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // 🧊 Card-style info section
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        const Text("🍽️", style: TextStyle(fontSize: 72)),
+                        const SizedBox(height: 20),
+
+                        Text(
+                          "No Active Plan Found",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xff1A1A1A),
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        Text(
+                          "You haven’t subscribed to a meal plan yet.\nLet’s explore your delicious options!",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: Colors.black54,
+                            height: 1.5,
+                          ),
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ExploreFoodScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            backgroundColor: primaryPurple,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Text(
+                            "Explore Our Food",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

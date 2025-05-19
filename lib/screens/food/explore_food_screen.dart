@@ -12,7 +12,9 @@ import 'widgets/explore_subscription_section.dart';
 class ExploreFoodScreen extends StatelessWidget {
   ExploreFoodScreen({super.key});
 
-  final Color primary = const Color(0xff6FCF97);
+  final Color background = const Color(0xffF3F4F6);
+  final Color gradientStart = const Color(0xff7F00FF);
+  final Color gradientEnd = const Color(0xff00FF87);
 
   final List<Map<String, dynamic>> products = [
     {
@@ -50,31 +52,92 @@ class ExploreFoodScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF4F9F5),
-      appBar: AppBar(
-        backgroundColor: primary,
-        elevation: 0,
-        title: Text("Explore Our Food",
-            style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16)),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const ExploreSearchBar(),
-          const SizedBox(height: 16),
-          const ExploreBanner(),
-          const SizedBox(height: 24),
-          ExploreRecommendedSection(products: products, primary: primary),
-          const SizedBox(height: 24),
-          ExploreSingleProductSection(products: products, primary: primary),
-          const SizedBox(height: 24),
-          ExploreMealsSection(products: products, primary: primary),
-          const SizedBox(height: 24),
-          ExploreSubscriptionSection(products: products, primary: primary),
+      backgroundColor: background,
+      body: CustomScrollView(
+        slivers: [
+          // ✅ SliverAppBar — compact & fixed with no extra gap
+          SliverAppBar(
+            pinned: true,
+            floating: false,
+            expandedHeight: 60,
+            elevation: 0,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin,
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [gradientStart, gradientEnd],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Explore Our Food",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Row(
+                            children: const [
+                              Icon(Icons.notifications_none_rounded,
+                                  color: Colors.white, size: 24),
+                              SizedBox(width: 16),
+                              CircleAvatar(
+                                radius: 18,
+                                backgroundColor: Colors.white,
+                                child: Icon(Icons.person, color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // ✅ Scrollable Sections
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(
+                children: [
+                  const ExploreSearchBar(),
+                  const SizedBox(height: 16),
+                  const ExploreBanner(),
+                  const SizedBox(height: 24),
+
+                  ExploreRecommendedSection(
+                      products: products, primary: gradientStart),
+                  const SizedBox(height: 24),
+
+                  ExploreSingleProductSection(
+                      products: products, primary: gradientStart),
+                  const SizedBox(height: 24),
+
+                  ExploreMealsSection(
+                      products: products, primary: gradientStart),
+                  const SizedBox(height: 24),
+
+                  ExploreSubscriptionSection(
+                      products: products, primary: gradientStart),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
